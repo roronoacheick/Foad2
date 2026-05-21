@@ -118,3 +118,61 @@ class DecisionTree:
  
         return best_params, best_f1
  
+    # PRIVATE METHODS
+    def _build_tree(self, X, Y, current_depth):
+        pass
+
+    
+    def _create_leaf(self, Y):
+        pass
+
+
+    def _find_best_split(self, X, Y):
+        pass
+
+
+    def _split(self, X, Y, feature_index, threshold):
+       pass
+
+
+    def _weighted_gini(self, Y_parent, Y_left, Y_right):
+        parent_size  = len(Y_parent)
+        left_weight  = len(Y_left)  / parent_size
+        right_weight = len(Y_right) / parent_size
+ 
+        weighted_gini = (
+            left_weight  * self._gini(Y_left)
+            + right_weight * self._gini(Y_right)
+        )
+        return weighted_gini
+
+
+    def _gini(self, Y):
+        total_samples = len(Y)
+        if total_samples == 0:
+            return 0
+ 
+        class_counter = {}
+        for label in Y:
+            if label not in class_counter:
+                class_counter[label] = 0
+            class_counter[label] += 1
+ 
+        sum_of_squared_proportions = sum(
+            (class_count / total_samples) ** 2
+            for class_count in class_counter.values()
+        )
+ 
+        return 1 - sum_of_squared_proportions
+    
+
+    def _traverse_tree(self, sample, current_node):
+        if current_node.is_leaf():
+            return current_node.prediction_value
+ 
+        feature_value = sample[current_node.feature_index]
+ 
+        if feature_value <= current_node.threshold:
+            return self._traverse_tree(sample, current_node.left_subtree)
+        else:
+            return self._traverse_tree(sample, current_node.right_subtree)
