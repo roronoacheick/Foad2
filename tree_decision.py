@@ -24,3 +24,10 @@ class DecisionTree:
         Y = list(Y)
  
         self.root = self._build_tree(X, Y, current_depth=0)
+    
+
+    def predict(self, sample):
+        if self.root is None:
+            raise Exception("The tree is not trained yet. Call fit() first.")
+ 
+        return self._traverse_tree(sample, self.root)
