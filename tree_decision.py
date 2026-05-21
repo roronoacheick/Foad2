@@ -75,3 +75,46 @@ class DecisionTree:
  
         f1_macro = sum(f1_scores_per_class) / len(f1_scores_per_class)
         return f1_macro
+    
+
+    def grid_search(self, X_train, Y_train, X_val, Y_val, depth_list, min_samples_list):
+        best_f1 = -1
+        best_params = {}
+        results = []   
+ 
+        for depth in depth_list:
+            for min_samples in min_samples_list:
+ 
+                temporary_tree = DecisionTree(
+                    max_depth=depth,
+                    min_samples_split=min_samples
+                )
+                temporary_tree.fit(X_train, Y_train)
+                f1_val = temporary_tree.evaluate(X_val, Y_val)
+ 
+                results.append({
+                    "max_depth": depth,
+                    "min_samples_split": min_samples,
+                    "f1_val": round(f1_val, 4)
+                })
+ 
+                if f1_val > best_f1:
+                    best_f1 = f1_val
+                    best_params = {
+                        "max_depth": depth,
+                        "min_samples_split": min_samples
+                    }
+ 
+        print("\n=== Grid Search Results ===")
+        print(f"{'max_depth':<15} {'min_samples':<15} {'F1 macro val':<15}")
+        for result in results:
+            print(
+                f"{result['max_depth']:<15} "
+                f"{result['min_samples_split']:<15} "
+                f"{result['f1_val']:<15}"
+            )
+        print(f"Best parameters : {best_params}")
+        print(f"Best F1 macro   : {round(best_f1, 4)}")
+ 
+        return best_params, best_f1
+ 
